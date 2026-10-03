@@ -1,1 +1,24 @@
 
+name: Build APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip
+        run: unzip -o "phone Guard pro.zip" -d t && cp -r t/*/*. 2>/dev/null || cp -r t/*. 2>/dev/null || true
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Build
+        run: |
+          chmod +x gradlew
+         ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhoneGuard-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
